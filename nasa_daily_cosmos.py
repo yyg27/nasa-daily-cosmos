@@ -127,7 +127,8 @@ def iotd_latest():
         "id": f"iotd_{date}",
         "title": item.findtext("title"),
         "explanation": re.sub(r"<[^>]+>", "", item.findtext("description") or ""),
-        "image": item.find("enclosure").get("url"),
+        # The enclosure is the full original (can be 200+ MB); nasa.gov resizes on request.
+        "image": item.find("enclosure").get("url") + "?w=2560",
         "link": item.findtext("link"),
     }
 
