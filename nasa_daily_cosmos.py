@@ -379,6 +379,8 @@ def main():
         sys.exit(f"{T['network_error']}: {e.reason}")
     except TimeoutError:
         sys.exit(f"{T['network_error']}: {T['timed_out']}")
+    except RuntimeError as e:
+        sys.exit(str(e))
 
 
 if __name__ == "__main__":

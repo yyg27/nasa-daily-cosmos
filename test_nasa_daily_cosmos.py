@@ -1,3 +1,4 @@
+import io
 import json
 import os
 import subprocess
@@ -137,6 +138,21 @@ class FixesTest(unittest.TestCase):
         for error in (TimeoutError(), urllib.error.URLError("offline"),
                       urllib.error.HTTPError("", 500, "down", None, None)):
             with mock.patch.object(nw, "get_json", side_effect=error):
+                self.assertIsNone(nw.apod_today())
+
+    def test_iotd_requests_resized_image(self):
+        feed = b"""<rss><channel><item><title>Moon</title><link>https://nasa.gov/moon</link>
+<description>&lt;p&gt;Bright&lt;/p&gt;</description><pubDate>Wed, 21 Oct 2026 10:00:00 -0400</pubDate>
+<enclosure url="https://nasa.gov/moon.jpg" type="image/jpeg"/></item></channel></rss>"""
+        with mock.patch("urllib.request.urlopen", return_value=io.BytesIO(feed)):
+            entry = nw.iotd_latest()
+        self.assertEqual((entry["id"], entry["image"], entry["explanation"]),
+                         ("iotd_2026-10-21", "https://nasa.gov/moon.jpg?w=2560", "Bright"))
+
+    def test_apod_logo_or_video_falls_back(self):
+        for entry in ({"media_type": "image", "url": "https://apod.nasa.gov/nasa-logo.svg"},
+                      {"media_type": "video", "url": "https://youtube.com/x"}):
+            with mock.patch.object(nw, "get_json", return_value=entry):
                 self.assertIsNone(nw.apod_today())
 
     def test_windows_pictures_folder_follows_onedrive(self):
