@@ -24,8 +24,10 @@ python3 nasa_daily_cosmos.py favorite   # save the last shown picture to favorit
 Optionally get a free API key from [api.nasa.gov](https://api.nasa.gov/) and set it as `NASA_API_KEY`.
 Without one the shared `DEMO_KEY` is used, which is enough for daily use.
 
-Buttons and messages follow the system language (English or Turkish). Set `NASA_DAILY_COSMOS_LANG=tr` or
-`NASA_DAILY_COSMOS_LANG=en` to override it.
+Buttons and messages follow the system display language (English or Turkish), not the regional formats:
+English display with Turkish dates and numbers still gives English buttons. Set `NASA_DAILY_COSMOS_LANG=tr` or
+`NASA_DAILY_COSMOS_LANG=en` to override it. The picture's title and text always stay in English, as NASA
+publishes them.
 
 Tests: `python3 -m unittest`.
 
@@ -35,7 +37,7 @@ Tests: `python3 -m unittest`.
 install -Dm755 nasa_daily_cosmos.py ~/.local/bin/nasa-daily-cosmos
 install -Dm644 -t ~/.config/systemd/user systemd/nasa-daily-cosmos.service systemd/nasa-daily-cosmos.timer
 echo "NASA_API_KEY=your-key" >> ~/.config/nasa-daily-cosmos.env   # optional
-echo "NASA_DAILY_COSMOS_LANG=tr" >> ~/.config/nasa-daily-cosmos.env  # optional
+echo "NASA_DAILY_COSMOS_LANG=tr" >> ~/.config/nasa-daily-cosmos.env  # optional, Turkish buttons whatever the system language
 systemctl --user daemon-reload
 systemctl --user enable --now nasa-daily-cosmos.timer
 ```
